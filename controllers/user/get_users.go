@@ -16,7 +16,7 @@ func GetUsersController(c echo.Context) error {
 	if result.Error != nil {
 		return c.JSON(http.StatusInternalServerError, basemodel.BaseResponse{
 			Status:  false,
-			Message: "Failed getting data from database!",
+			Message: "Failed get data from database",
 			Data:    nil,
 		})
 	}
