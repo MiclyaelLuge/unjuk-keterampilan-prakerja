@@ -17,12 +17,13 @@ func RegisterController(c echo.Context) error {
 
 	hashPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 12)
 	user.Password = string(hashPassword)
+	user.Token = middleware.GenerateTokenJWT(user.ID, user.Name)
 
 	result := configs.DB.Create(&user)
 	if result.Error != nil {
 		return c.JSON(http.StatusInternalServerError, base.BaseResponse{
 			Status:  false,
-			Message: "Faild adding data to database",
+			Message: "Failed adding data to database",
 			Data:    nil,
 		})
 	}
@@ -31,7 +32,7 @@ func RegisterController(c echo.Context) error {
 		Id:    user.ID,
 		Name:  user.Name,
 		Email: user.Email,
-		Token: middleware.GenerateTokenJWT(user.ID, user.Name),
+		Token: user.Token,
 	}
 
 	return c.JSON(http.StatusOK, base.BaseResponse{
